@@ -73,7 +73,7 @@ export default function ScannerPage() {
   }
 
   const handleScan = async (data: string) => {
-    if (!selectedCustomer) {
+    if (selectedCustomer === undefined) {
       toast.error("Please select a customer before scanning.");
       return;
     }
@@ -123,7 +123,7 @@ export default function ScannerPage() {
       {/* Controls */}
       <div
         style={styles.controls}
-        className="flex items-center gap-2 flex-wrap"
+        className="grid grid-cols-2 lg:flex lg:items-center gap-2"
       >
         <Select
           placeholder="Select a device"
@@ -149,7 +149,7 @@ export default function ScannerPage() {
           ]}
         />
 
-        <Select
+        <Select<number>
           placeholder="Select a customer"
           style={{ width: 180 }}
           value={selectedCustomer}
@@ -213,7 +213,7 @@ export default function ScannerPage() {
           }}
           allowMultiple={true}
           scanDelay={2000}
-          paused={pause}
+          paused={pause || selectedCustomer === undefined || !selectedDate}
         />
       </div>
 
