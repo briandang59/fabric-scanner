@@ -11,6 +11,7 @@ import {
 import { DatePicker, DatePickerProps, Select } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import FabricScannedItem from "@/components/FabricScannedItem";
+import toast from "react-hot-toast";
 
 const styles = {
   controls: {
@@ -72,29 +73,42 @@ export default function ScannerPage() {
   }
 
   const handleScan = async (data: string) => {
+    if (!selectedCustomer) {
+      toast.error("Please select a customer before scanning.");
+      return;
+    }
+    if (!selectedDate) {
+      toast.error("Please select a date before scanning.");
+      return;
+    }
+
     setPause(true);
     try {
       const customer = customers.find((c) => c.id === selectedCustomer);
 
       const isExist = scannedData.some((item) => item.fabric === data);
       if (isExist) {
-        console.log(`⚠️ Data "${data}" đã tồn tại, bỏ qua.`);
+        toast(`Code "${data}" already exists. Skipping.`, {
+          icon: "⚠️",
+        });
         return;
       }
 
       const newItem: ScannedItem = {
         id: String(scannedData.length + 1),
-        customer_id: selectedCustomer ?? 0,
+        customer_id: selectedCustomer,
         customer_name: customer?.name ?? "Unknown",
-        date: (selectedDate ?? dayjs()).format("YYYY-MM-DD"),
+        date: selectedDate.format("YYYY-MM-DD"),
         fabric: data ?? "N/A",
         card_number: "B25098",
         created_at: new Date().toISOString(),
       };
 
       setScannedData((prev) => [...prev, newItem]);
+      toast.success("Scanned successfully!");
     } catch (error) {
-      console.log(error);
+      toast.error("An error occurred while scanning.");
+      console.error(error);
     } finally {
       setPause(false);
     }
