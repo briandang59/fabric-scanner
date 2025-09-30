@@ -76,8 +76,14 @@ export default function ScannerPage() {
     try {
       const customer = customers.find((c) => c.id === selectedCustomer);
 
+      const isExist = scannedData.some((item) => item.fabric === data);
+      if (isExist) {
+        console.log(`⚠️ Data "${data}" đã tồn tại, bỏ qua.`);
+        return;
+      }
+
       const newItem: ScannedItem = {
-        id: crypto.randomUUID(),
+        id: String(scannedData.length + 1),
         customer_id: selectedCustomer ?? 0,
         customer_name: customer?.name ?? "Unknown",
         date: (selectedDate ?? dayjs()).format("YYYY-MM-DD"),
@@ -197,11 +203,16 @@ export default function ScannerPage() {
         />
       </div>
 
-      {/* Render danh sách item đã quét */}
       <div className="mt-6 flex flex-col gap-4">
-        {scannedData.map((item) => (
-          <FabricScannedItem key={item.id} {...item} />
-        ))}
+        {[...scannedData]
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )
+          .map((item) => (
+            <FabricScannedItem key={item.id} {...item} />
+          ))}
       </div>
     </div>
   );
