@@ -21,13 +21,10 @@ const styles = {
   },
 };
 
-interface Customer {
-  id: number;
-  name: string;
-}
+
 
 interface ScannedItem {
-  id: string;
+  id: number;
   customer_id: number;
   customer_name: string;
   date: string;
@@ -40,22 +37,10 @@ export default function ScannerPage() {
   const [deviceId, setDeviceId] = useState<string | undefined>(undefined);
   const [tracker, setTracker] = useState<string | undefined>("centerText");
   const [pause, setPause] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState<
-    number | undefined
-  >();
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+
   const [scannedData, setScannedData] = useState<ScannedItem[]>([]);
 
-  const customers: Customer[] = [
-    { id: 1, name: "Sang" },
-    { id: 2, name: "Quang" },
-    { id: 3, name: "Tâm" },
-    { id: 4, name: "Jeffery" },
-    { id: 5, name: "Ming" },
-    { id: 6, name: "Nguyên" },
-    { id: 7, name: "Huy" },
-    { id: 8, name: "Chung" },
-  ];
+
 
   const devices = useDevices();
 
@@ -73,20 +58,12 @@ export default function ScannerPage() {
   }
 
   const handleScan = async (data: string) => {
-    if (selectedCustomer === undefined) {
-      toast.error("Please select a customer before scanning.");
-      return;
-    }
-    if (!selectedDate) {
-      toast.error("Please select a date before scanning.");
-      return;
-    }
+
 
     setPause(true);
     try {
-      const customer = customers.find((c) => c.id === selectedCustomer);
 
-      const isExist = scannedData.some((item) => item.fabric === data);
+      const isExist = scannedData.find((item) => item.fabric === data);
       if (isExist) {
         toast(`Code "${data}" already exists. Skipping.`, {
           icon: "⚠️",
@@ -95,10 +72,10 @@ export default function ScannerPage() {
       }
 
       const newItem: ScannedItem = {
-        id: String(scannedData.length + 1),
-        customer_id: selectedCustomer,
-        customer_name: customer?.name ?? "Unknown",
-        date: selectedDate.format("YYYY-MM-DD"),
+        id: scannedData.length + 1,
+        customer_id: 2,
+        customer_name:  "Quang",
+        date: dayjs().format("YYYY-MM-DD"),
         fabric: data ?? "N/A",
         card_number: "B25098",
         created_at: new Date().toISOString(),
@@ -114,20 +91,16 @@ export default function ScannerPage() {
     }
   };
 
-  const onChange: DatePickerProps["onChange"] = (date) => {
-    setSelectedDate(date);
-  };
 
   return (
     <div>
-      {/* Controls */}
       <div
         style={styles.controls}
         className="flex flex-wrap items-center gap-2"
       >
         <Select
           placeholder="Select a device"
-          style={{ width: 180 }}
+          style={{ width: 150 }}
           value={deviceId}
           onChange={(value) => setDeviceId(value)}
           options={devices.map((device) => ({
@@ -138,7 +111,7 @@ export default function ScannerPage() {
 
         <Select
           placeholder="Select tracker"
-          style={{ width: 180 }}
+          style={{ width: 150 }}
           value={tracker}
           onChange={(value) => setTracker(value)}
           options={[
@@ -149,26 +122,8 @@ export default function ScannerPage() {
           ]}
         />
 
-        <Select<number>
-          placeholder="Select a customer"
-          style={{ width: 180 }}
-          value={selectedCustomer}
-          onChange={(value) => setSelectedCustomer(value)}
-          options={customers.map((cus) => ({
-            value: cus.id,
-            label: cus.name,
-          }))}
-        />
-
-        <DatePicker
-          value={selectedDate}
-          onChange={onChange}
-          maxDate={dayjs()}
-          format={"YYYY-MM-DD"}
-        />
       </div>
 
-      {/* Scanner */}
       <div className="flex items-center justify-center">
         <Scanner
           formats={[
@@ -213,7 +168,7 @@ export default function ScannerPage() {
           }}
           allowMultiple={true}
           scanDelay={2000}
-          paused={pause || selectedCustomer === undefined || !selectedDate}
+          paused={pause}
         />
       </div>
 

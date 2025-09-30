@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
 interface FabricScannedItemProps {
-  id: string;
+  id: number;
   customer_id: number;
   date: string;
   fabric: string;
