@@ -57,25 +57,21 @@ export default function ScannerPage() {
     }
   }
 
-    const normalize = (str: string) => str.trim().toUpperCase();
 
-    const handleScan = async (data: string) => {
-        setPause(true);
-        try {
-            const normalizedData = normalize(data);
+    const handleScan = (data: string) => {
+        const normalizedData = data.trim().toUpperCase();
 
-            const isExist = scannedData.some(
-                (item) => normalize(item.fabric) === normalizedData
-            );
+        setScannedData((prev) => {
+            const isExist = prev.some((item) => item.fabric === normalizedData);
             if (isExist) {
                 toast(`Code "${normalizedData}" already exists. Skipping.`, {
                     icon: "⚠️",
                 });
-                return;
+                return prev; // không thêm nữa
             }
 
             const newItem: ScannedItem = {
-                id: scannedData.length + 1,
+                id: prev.length + 1,
                 customer_id: 2,
                 customer_name: "Quang",
                 date: dayjs().format("YYYY-MM-DD"),
@@ -84,15 +80,11 @@ export default function ScannerPage() {
                 created_at: new Date().toISOString(),
             };
 
-            setScannedData((prev) => [...prev, newItem]);
             toast.success("Scanned successfully!");
-        } catch (error) {
-            toast.error("An error occurred while scanning.");
-            console.error(error);
-        } finally {
-            setPause(false);
-        }
+            return [...prev, newItem];
+        });
     };
+
 
 
 
