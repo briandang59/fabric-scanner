@@ -123,7 +123,7 @@ export default function ScannerPage() {
       {/* Controls */}
       <div
         style={styles.controls}
-        className="grid grid-cols-2 lg:flex lg:items-center gap-2"
+        className="flex flex-wrap items-center gap-2"
       >
         <Select
           placeholder="Select a device"
