@@ -1,23 +1,26 @@
-# Sử dụng image node chính thức
-FROM node:18-alpine
+# Stage 1: Build stage
+FROM node:18-alpine AS builder
 
-# Tạo thư mục app
 WORKDIR /app
 
-# Copy file package trước để tối ưu cache
 COPY package.json package-lock.json* ./
-
-# Cài đặt dependencies
 RUN npm install
 
-# Copy toàn bộ source
 COPY . .
+RUN npm run build  # 🔑 build để tạo thư mục .next
 
-# Build Next.js
-RUN npm run build
+# Stage 2: Production image
+FROM node:18-alpine
 
-# Expose port mặc định của Next.js
+WORKDIR /app
+
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/package-lock.json ./
+RUN npm install --omit=dev  # chỉ cài dependency production
+
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/next.config.js ./
+
 EXPOSE 3001
-
-# Start app
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start", "--", "-p", "3001"]
