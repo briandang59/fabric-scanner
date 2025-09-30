@@ -8,10 +8,10 @@ import {
   boundingBox,
   centerText,
 } from "@yudiel/react-qr-scanner";
-import { DatePicker, DatePickerProps, Select } from "antd";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import FabricScannedItem from "@/components/FabricScannedItem";
 import toast from "react-hot-toast";
+import {Select} from "antd";
 
 const styles = {
   controls: {
@@ -23,7 +23,7 @@ const styles = {
 
 
 
-interface ScannedItem {
+export interface ScannedItem {
   id: number;
   customer_id: number;
   customer_name: string;
@@ -57,42 +57,46 @@ export default function ScannerPage() {
     }
   }
 
-  const handleScan = async (data: string) => {
+    const normalize = (str: string) => str.trim().toUpperCase();
+
+    const handleScan = async (data: string) => {
+        setPause(true);
+        try {
+            const normalizedData = normalize(data);
+
+            const isExist = scannedData.some(
+                (item) => normalize(item.fabric) === normalizedData
+            );
+            if (isExist) {
+                toast(`Code "${normalizedData}" already exists. Skipping.`, {
+                    icon: "⚠️",
+                });
+                return;
+            }
+
+            const newItem: ScannedItem = {
+                id: scannedData.length + 1,
+                customer_id: 2,
+                customer_name: "Quang",
+                date: dayjs().format("YYYY-MM-DD"),
+                fabric: normalizedData,
+                card_number: "B25098",
+                created_at: new Date().toISOString(),
+            };
+
+            setScannedData((prev) => [...prev, newItem]);
+            toast.success("Scanned successfully!");
+        } catch (error) {
+            toast.error("An error occurred while scanning.");
+            console.error(error);
+        } finally {
+            setPause(false);
+        }
+    };
 
 
-    setPause(true);
-    try {
 
-      const isExist = scannedData.find((item) => item.fabric === data);
-      if (isExist) {
-        toast(`Code "${data}" already exists. Skipping.`, {
-          icon: "⚠️",
-        });
-        return;
-      }
-
-      const newItem: ScannedItem = {
-        id: scannedData.length + 1,
-        customer_id: 2,
-        customer_name:  "Quang",
-        date: dayjs().format("YYYY-MM-DD"),
-        fabric: data ?? "N/A",
-        card_number: "B25098",
-        created_at: new Date().toISOString(),
-      };
-
-      setScannedData((prev) => [...prev, newItem]);
-      toast.success("Scanned successfully!");
-    } catch (error) {
-      toast.error("An error occurred while scanning.");
-      console.error(error);
-    } finally {
-      setPause(false);
-    }
-  };
-
-
-  return (
+    return (
     <div>
       <div
         style={styles.controls}
