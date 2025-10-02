@@ -3,5 +3,17 @@
     "vn": "Vietnamese",
     "zh": "Chinese",
     "en": "English"
+  },
+  "common": {
+    "test_qr": "Test QR code scanning",
+    "login": "Login",
+    "logout": "Logout",
+    "scan_fabric": "Scan Fabric",
+    "statistical": "Statistical",
+    "menu": "Menu"
+  },
+  "login": {
+    "account": "Account",
+    "password": "Password"
   }
 }

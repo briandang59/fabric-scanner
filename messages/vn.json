@@ -3,5 +3,17 @@
     "vn": "Tiếng Việt",
     "zh": "Tiếng Trung",
     "en": "Tiếng Anh"
+  },
+  "common": {
+    "test_qr": "Thử nghiệm",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "scan_fabric": "Quét mã vải",
+    "statistical": "Biểu đồ thống kê",
+    "menu": "Danh mục chức năng"
+  },
+  "login": {
+    "account": "Tài khoản",
+    "password": "Mật khẩu"
   }
 }

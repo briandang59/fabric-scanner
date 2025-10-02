@@ -1,19 +1,22 @@
 "use client";
 import { useState } from "react";
 import svgs from "@/assets";
-import { Button, Drawer } from "antd";
+import { Drawer } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import LanguageSwitcher from "./SwitchLanguage";
 import { Menu } from "lucide-react";
+import { useTranslationCustom } from "@/utils/hooks/useTranslationCustom";
+import { paths } from "@/utils/constants/paths";
 
 function Header() {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslationCustom();
 
   const pages = [
-    { label: "Thử nghiệm quét mã", link: "/" },
-    { label: "Quét mã", link: "/" },
-    { label: "Thống kê", link: "/" },
+    { label: t.common.test_qr, link: paths.HOME },
+    { label: t.common.scan_fabric, link: paths.FABRIC_SCAN },
+    { label: t.common.statistical, link: paths.STATISTICAL },
   ];
 
   return (
@@ -34,7 +37,7 @@ function Header() {
             </li>
           ))}
         </ul>
-        <Button>Đăng nhập</Button>
+        <Link href={`/${paths.LOGIN}`}>{t.common.login}</Link>
         <LanguageSwitcher />
       </div>
 
@@ -45,7 +48,7 @@ function Header() {
       <Drawer
         title={
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-lg">Menu</span>
+            <span className="font-semibold text-lg">{t.common.menu}</span>
           </div>
         }
         placement="right"
@@ -61,9 +64,9 @@ function Header() {
         </ul>
 
         <div className="mt-6 flex flex-col gap-3">
-          <Button type="primary" block>
-            Đăng nhập
-          </Button>
+          <Link href={`/${paths.LOGIN}`} className="text-[18px]">
+            {t.common.login}
+          </Link>
           <LanguageSwitcher />
         </div>
       </Drawer>

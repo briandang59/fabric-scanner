@@ -9,7 +9,7 @@ import {
   centerText,
 } from "@yudiel/react-qr-scanner";
 import dayjs from "dayjs";
-import FabricScannedItem from "@/components/FabricScannedItem";
+import FabricScannedItem from "@/components/common/FabricScannedItem";
 import toast from "react-hot-toast";
 import { Select, Tabs } from "antd";
 import type { TabsProps } from "antd";
