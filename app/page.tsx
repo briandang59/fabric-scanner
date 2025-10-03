@@ -24,7 +24,7 @@ const Scanner = nextDynamic(
 );
 export interface ScannedItem {
   id: number;
-  customer_id: number;
+  customer_id: string;
   customer_name: string;
   date: string;
   fabric: string;
@@ -67,7 +67,7 @@ export default function Home() {
         ...prev,
         {
           id: prev.length + 1,
-          customer_id: 2,
+          customer_id: "2",
           customer_name: "Quang",
           date: dayjs().format("YYYY-MM-DD"),
           fabric: normalizedData,

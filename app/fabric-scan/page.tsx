@@ -1,40 +1,31 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import nextDynamic from "next/dynamic";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import FabricScannedItem from "@/components/common/FabricScannedItem";
 import toast from "react-hot-toast";
-import { Select, Tabs } from "antd";
+import { Select, Tabs, DatePicker } from "antd";
 import type { TabsProps } from "antd";
 import { ClipboardList, ScanLine } from "lucide-react";
 import {
   useDevices,
-  outline,
-  boundingBox,
   centerText,
   type IDetectedBarcode,
   type TrackFunction,
 } from "@yudiel/react-qr-scanner";
+import { useCustomer } from "@/lib/swr/useCustomer";
+import { CustomerResponseType } from "@/types/responses/customer";
 
-// ✅ chỉ dynamic import Scanner để tránh SSR
 const Scanner = nextDynamic(
   () => import("@yudiel/react-qr-scanner").then((mod) => mod.Scanner),
   { ssr: false }
 );
 
-const styles = {
-  controls: {
-    marginBottom: 8,
-    display: "flex",
-    gap: 8,
-  },
-};
-
 export interface ScannedItem {
   id: number;
-  customer_id: number;
+  customer_id: string;
   customer_name: string;
   date: string;
   fabric: string;
@@ -42,43 +33,30 @@ export interface ScannedItem {
   created_at: string;
 }
 
-interface DeviceInfo {
-  deviceId: string;
-  label: string;
-}
-
 export default function FabricScan() {
-  const [deviceId, setDeviceId] = useState<string>();
-  const [tracker, setTracker] = useState<string>("centerText");
-  const [pause] = useState(false);
   const [scannedData, setScannedData] = useState<ScannedItem[]>([]);
+  const { data: customerData, isLoading: isLoadingCustomer } = useCustomer();
 
-  // ✅ gọi hook trực tiếp (không conditional)
-  const devices: DeviceInfo[] = useDevices();
+  const [selectedCustomer, setSelectedCustomer] =
+    useState<CustomerResponseType | null>(null);
 
-  const getTracker: TrackFunction | undefined = useMemo(() => {
-    switch (tracker) {
-      case "outline":
-        return outline;
-      case "boundingBox":
-        return boundingBox;
-      case "centerText":
-        return centerText;
-      case "none":
-        return undefined;
-      default:
-        return undefined;
-    }
-  }, [tracker]);
+  const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
+
+  const devices = useDevices();
+  const deviceId = devices[0]?.deviceId;
+  const tracker: TrackFunction = centerText;
 
   const handleScan = (data: string) => {
+    if (!selectedCustomer) {
+      toast.error("Vui lòng chọn khách hàng trước khi quét!");
+      return;
+    }
+
     const normalizedData = data.trim().toUpperCase();
 
-    setScannedData((prev) => {
+    setScannedData((prev: ScannedItem[]) => {
       if (prev.some((item) => item.fabric === normalizedData)) {
-        toast(`Code "${normalizedData}" already exists. Skipping.`, {
-          icon: "⚠️",
-        });
+        toast(`Code "${normalizedData}" đã tồn tại, bỏ qua.`, { icon: "⚠️" });
         return prev;
       }
 
@@ -86,9 +64,9 @@ export default function FabricScan() {
         ...prev,
         {
           id: prev.length + 1,
-          customer_id: 2,
-          customer_name: "Quang",
-          date: dayjs().format("YYYY-MM-DD"),
+          customer_id: selectedCustomer.id,
+          customer_name: selectedCustomer.customer_name,
+          date: selectedDate.format("YYYY-MM-DD"),
           fabric: normalizedData,
           card_number: "B25098",
           created_at: new Date().toISOString(),
@@ -96,7 +74,7 @@ export default function FabricScan() {
       ];
     });
 
-    toast.success("Scanned successfully!");
+    toast.success("Quét thành công!");
   };
 
   const items: TabsProps["items"] = [
@@ -110,37 +88,33 @@ export default function FabricScan() {
       ),
       children: (
         <div>
-          {/* Controls */}
-          <div
-            style={styles.controls}
-            className="flex flex-wrap items-center gap-2"
-          >
+          <div className="flex flex-wrap items-center gap-4 mb-4">
             <Select
-              placeholder="Select a device"
-              style={{ width: 180 }}
-              value={deviceId}
-              onChange={(value) => setDeviceId(value)}
-              options={devices.map((device) => ({
-                value: device.deviceId,
-                label: device.label,
+              placeholder="Chọn khách hàng"
+              loading={isLoadingCustomer}
+              style={{ width: 200 }}
+              onChange={(value) => {
+                const customer = customerData?.data?.find(
+                  (c: CustomerResponseType) => c.id === value
+                );
+                if (customer) setSelectedCustomer(customer);
+              }}
+              options={customerData?.data?.map((c: CustomerResponseType) => ({
+                value: c.id,
+                label: c.customer_name,
               }))}
             />
 
-            <Select
-              placeholder="Select tracker"
-              style={{ width: 180 }}
-              value={tracker}
-              onChange={(value) => setTracker(value)}
-              options={[
-                { value: "centerText", label: "Center Text" },
-                { value: "outline", label: "Outline" },
-                { value: "boundingBox", label: "Bounding Box" },
-                { value: "none", label: "No Tracker" },
-              ]}
+            <DatePicker
+              value={selectedDate}
+              onChange={(date) => date && setSelectedDate(date)}
+              disabledDate={(current) =>
+                current && current > dayjs().endOf("day")
+              }
+              format="YYYY-MM-DD"
             />
           </div>
 
-          {/* Scanner */}
           <div className="flex items-center justify-center">
             <Scanner
               formats={[
@@ -168,11 +142,11 @@ export default function FabricScan() {
                 torch: true,
                 zoom: true,
                 finder: true,
-                tracker: getTracker,
+                tracker,
               }}
               allowMultiple
               scanDelay={5000}
-              paused={pause}
+              paused={false}
             />
           </div>
         </div>
@@ -183,7 +157,7 @@ export default function FabricScan() {
       label: (
         <span className="flex items-center gap-2">
           <ClipboardList size={16} />
-          <span>Results</span>
+          <span>Kết quả</span>
         </span>
       ),
       children: (
