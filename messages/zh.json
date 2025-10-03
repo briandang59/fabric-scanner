@@ -16,10 +16,28 @@
     "account": "帳號",
     "password": "密碼"
   },
+  "fabric_scan": {
+    "scan": "掃描布料 QR 碼",
+    "result": "結果",
+    "choose_cus": "選擇客戶",
+    "create_cus": "新增客戶",
+    "cus_name": "客戶名稱",
+    "save": "儲存",
+    "title_confirm": "確認刪除",
+    "des_confirm": "您確定要刪除此記錄嗎？",
+    "delete": "刪除",
+    "cancel": "取消"
+  },
   "toast": {
     "loggining": "正在登入...",
     "loggin_succesed": "登入成功",
     "loggin_failed": "登入失敗！",
-    "err": "錯誤: "
+    "err": "錯誤：",
+    "selected_cus": "請先選擇客戶再掃描！",
+    "selected_date": "日期無效！",
+    "card_number": "找不到卡號，請重新登入！",
+    "loading": "執行中...",
+    "successed": "成功！",
+    "failed": "失敗！"
   }
 }

@@ -55,14 +55,14 @@ function LoginForm() {
       <FormInput
         control={control}
         name="account"
-        label={t.login.account}
+        label={t.fabric_scan.cus_name}
         size="large"
         error={errors.account?.message}
       />
       <FormInput
         control={control}
         name="password"
-        label={t.login.password}
+        label={t.fabric_scan.save}
         type="password"
         size="large"
         error={errors.password?.message}

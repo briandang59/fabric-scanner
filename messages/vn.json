@@ -16,10 +16,28 @@
     "account": "Tài khoản",
     "password": "Mật khẩu"
   },
+  "fabric_scan": {
+    "scan": "Quét mã qr vải",
+    "result": "Kết quả",
+    "choose_cus": "Chọn khách hàng",
+    "create_cus": "Thêm khách hàng",
+    "cus_name": "Tên khách hàng",
+    "save": "Lưu",
+    "title_confirm": "Xác nhận xoá",
+    "des_confirm": "Bạn có chắc muốn xoá bản ghi này?",
+    "delete": "Xóa",
+    "cancel": "Hủy"
+  },
   "toast": {
     "loggining": "Đang đăng nhập...",
     "loggin_succesed": "Đăng nhập thành công",
     "loggin_failed": "Đăng nhập thất bại!",
-    "err": "Lỗi: "
+    "err": "Lỗi: ",
+    "selected_cus": "Vui lòng chọn khách hàng trước khi quét!",
+    "selected_date": "Ngày không hợp lệ!",
+    "card_number": "Không tìm thấy số thẻ, vui lòng đăng nhập lại!",
+    "loading": "Đang thực hiện...",
+    "successed": "Thành công!",
+    "failed": "Thất bại!"
   }
 }

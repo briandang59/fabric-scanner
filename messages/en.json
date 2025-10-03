@@ -16,10 +16,28 @@
     "account": "Account",
     "password": "Password"
   },
+  "fabric_scan": {
+    "scan": "Scan fabric QR code",
+    "result": "Results",
+    "choose_cus": "Select customer",
+    "create_cus": "Add customer",
+    "cus_name": "Customer name",
+    "save": "Save",
+    "title_confirm": "Delete Confirmation",
+    "des_confirm": "Are you sure you want to delete this record?",
+    "delete": "Delete",
+    "cancel": "Cancel"
+  },
   "toast": {
     "loggining": "Logging in...",
     "loggin_succesed": "Login successful",
     "loggin_failed": "Login failed!",
-    "err": "Error: "
+    "err": "Error: ",
+    "selected_cus": "Please select a customer before scanning!",
+    "selected_date": "Invalid date!",
+    "card_number": "Card number not found, please log in again!",
+    "loading": "Processing...",
+    "successed": "Success!",
+    "failed": "Failed!"
   }
 }

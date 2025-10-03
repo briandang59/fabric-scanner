@@ -17,26 +17,18 @@ import {
   type IDetectedBarcode,
   type TrackFunction,
 } from "@yudiel/react-qr-scanner";
+import { InterestResponseType } from "@/types/responses/interest";
 
 const Scanner = nextDynamic(
   () => import("@yudiel/react-qr-scanner").then((mod) => mod.Scanner),
   { ssr: false }
 );
-export interface ScannedItem {
-  id: number;
-  customer_id: string;
-  customer_name: string;
-  date: string;
-  fabric: string;
-  card_number: string;
-  created_at: string;
-}
 
 export default function Home() {
   const [deviceId, setDeviceId] = useState<string>();
   const [tracker, setTracker] = useState<string>("centerText");
   const [pause] = useState(false);
-  const [scannedData, setScannedData] = useState<ScannedItem[]>([]);
+  const [scannedData, setScannedData] = useState<InterestResponseType[]>([]);
 
   const devices = useDevices();
 
@@ -63,22 +55,28 @@ export default function Home() {
         });
         return prev;
       }
+
       return [
         ...prev,
         {
-          id: prev.length + 1,
+          id: crypto.randomUUID(), // vì InterestResponseType.id là string
           customer_id: "2",
           customer_name: "Quang",
           date: dayjs().format("YYYY-MM-DD"),
           fabric: normalizedData,
           card_number: "B25098",
           created_at: new Date().toISOString(),
+          is_deleted: null, // thêm để khớp type
         },
       ];
     });
     toast.success("Scanned successfully!");
   };
 
+  const handleDelete = (id: string) => {
+    setScannedData((prev) => prev.filter((item) => item.id !== id));
+    toast.success("Đã xoá thành công!");
+  };
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -168,7 +166,11 @@ export default function Home() {
                 new Date(a.created_at).getTime()
             )
             .map((item) => (
-              <FabricScannedItem key={item.id} {...item} />
+              <FabricScannedItem
+                key={item.id}
+                {...item}
+                onDelete={handleDelete}
+              />
             ))}
         </div>
       ),
