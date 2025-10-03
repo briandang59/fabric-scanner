@@ -3,16 +3,18 @@
 import { Form, Button } from "antd";
 
 import { FormInput } from "../formsComponent";
-// import Link from "next/link";
 import { useForm } from "react-hook-form";
-// import toast from "react-hot-toast";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useTranslationCustom } from "@/utils/hooks/useTranslationCustom";
 import { LoginFormValues, loginSchema } from "@/utils/schemas/login";
 import { yupResolver } from "@hookform/resolvers/yup";
-
+import toast from "react-hot-toast";
+import { APIS } from "@/lib/apis";
+import { LoginRequestType } from "@/types/requests/auth";
+import { paths } from "@/utils/constants/paths";
+import { useAuthStore } from "@/stores/useAuthStore";
 function LoginForm() {
-  //   const router = useRouter();
+  const router = useRouter();
   const { t } = useTranslationCustom();
   const {
     control,
@@ -26,22 +28,26 @@ function LoginForm() {
     },
   });
 
-  const onSubmit = async () => {
-    // await toast.promise(APIS.auth.login(data), {
-    //   loading: "Đang đăng nhập...",
-    //   success: (res) => {
-    //     if (res.data?.token) {
-    //       setAuth(res.data.token, res.data.user);
-    //       router.push(paths.home);
-    //     }
-    //     return "Đăng nhập thành công ";
-    //   },
-    //   error: (err) => {
-    //     return err instanceof Error
-    //       ? `Lỗi: ${err.message}`
-    //       : "Đăng nhập thất bại!";
-    //   },
-    // });
+  const onSubmit = async (data: LoginFormValues) => {
+    const payload: LoginRequestType = {
+      cardNumber: data.account.toUpperCase(),
+      password: data.password,
+    };
+    await toast.promise(APIS.auth.login(payload), {
+      loading: t.toast.loggining,
+      success: (res) => {
+        if (res.data?.token) {
+          useAuthStore.getState().login(res.data.token, res.data.account);
+          router.push(paths.HOME);
+        }
+        return t.toast.loggin_succesed;
+      },
+      error: (err) => {
+        return err instanceof Error
+          ? `${t.toast.err} ${err.message}`
+          : t.toast.loggin_failed;
+      },
+    });
   };
 
   return (

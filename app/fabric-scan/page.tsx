@@ -18,10 +18,20 @@ import {
   type TrackFunction,
 } from "@yudiel/react-qr-scanner";
 
+// ✅ chỉ dynamic import Scanner để tránh SSR
 const Scanner = nextDynamic(
   () => import("@yudiel/react-qr-scanner").then((mod) => mod.Scanner),
   { ssr: false }
 );
+
+const styles = {
+  controls: {
+    marginBottom: 8,
+    display: "flex",
+    gap: 8,
+  },
+};
+
 export interface ScannedItem {
   id: number;
   customer_id: number;
@@ -32,13 +42,19 @@ export interface ScannedItem {
   created_at: string;
 }
 
-export default function Home() {
+interface DeviceInfo {
+  deviceId: string;
+  label: string;
+}
+
+export default function FabricScan() {
   const [deviceId, setDeviceId] = useState<string>();
   const [tracker, setTracker] = useState<string>("centerText");
   const [pause] = useState(false);
   const [scannedData, setScannedData] = useState<ScannedItem[]>([]);
 
-  const devices = useDevices();
+  // ✅ gọi hook trực tiếp (không conditional)
+  const devices: DeviceInfo[] = useDevices();
 
   const getTracker: TrackFunction | undefined = useMemo(() => {
     switch (tracker) {
@@ -48,6 +64,8 @@ export default function Home() {
         return boundingBox;
       case "centerText":
         return centerText;
+      case "none":
+        return undefined;
       default:
         return undefined;
     }
@@ -63,6 +81,7 @@ export default function Home() {
         });
         return prev;
       }
+
       return [
         ...prev,
         {
@@ -76,6 +95,7 @@ export default function Home() {
         },
       ];
     });
+
     toast.success("Scanned successfully!");
   };
 
@@ -90,15 +110,19 @@ export default function Home() {
       ),
       children: (
         <div>
-          <div className="flex flex-wrap items-center gap-2 mb-2">
+          {/* Controls */}
+          <div
+            style={styles.controls}
+            className="flex flex-wrap items-center gap-2"
+          >
             <Select
               placeholder="Select a device"
               style={{ width: 180 }}
               value={deviceId}
               onChange={(value) => setDeviceId(value)}
-              options={devices.map((d) => ({
-                value: d.deviceId,
-                label: d.label,
+              options={devices.map((device) => ({
+                value: device.deviceId,
+                label: device.label,
               }))}
             />
 
@@ -116,7 +140,8 @@ export default function Home() {
             />
           </div>
 
-          <div className="flex justify-center">
+          {/* Scanner */}
+          <div className="flex items-center justify-center">
             <Scanner
               formats={[
                 "qr_code",
@@ -134,7 +159,9 @@ export default function Home() {
                   handleScan(detectedCodes[0].rawValue);
                 }
               }}
-              onError={(error) => console.error("Scanner error:", error)}
+              onError={(error: unknown) => {
+                console.error("onError:", error);
+              }}
               styles={{ container: { height: "400px", width: "350px" } }}
               components={{
                 onOff: true,

@@ -15,5 +15,11 @@
   "login": {
     "account": "Tài khoản",
     "password": "Mật khẩu"
+  },
+  "toast": {
+    "loggining": "Đang đăng nhập...",
+    "loggin_succesed": "Đăng nhập thành công",
+    "loggin_failed": "Đăng nhập thất bại!",
+    "err": "Lỗi: "
   }
 }

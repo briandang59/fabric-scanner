@@ -15,5 +15,11 @@
   "login": {
     "account": "Account",
     "password": "Password"
+  },
+  "toast": {
+    "loggining": "Logging in...",
+    "loggin_succesed": "Login successful",
+    "loggin_failed": "Login failed!",
+    "err": "Error: "
   }
 }

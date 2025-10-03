@@ -15,5 +15,11 @@
   "login": {
     "account": "帳號",
     "password": "密碼"
+  },
+  "toast": {
+    "loggining": "正在登入...",
+    "loggin_succesed": "登入成功",
+    "loggin_failed": "登入失敗！",
+    "err": "錯誤: "
   }
 }
