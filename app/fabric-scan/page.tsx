@@ -41,7 +41,7 @@ export default function FabricScan() {
   const devices = useDevices();
   const deviceId = devices[0]?.deviceId;
   const tracker: TrackFunction = centerText;
-
+  //
   const handleScan = async (data: string) => {
     if (!selectedCustomer || selectedCustomer === null) {
       toast.error(t.toast.selected_cus);
