@@ -9,7 +9,7 @@ export function useCustomer() {
 
   return useApi<BaseResponse<CustomerResponseType[]>>(key, {
     requireAuth: true,
-    fetcher: (_url: string) =>
+    fetcher: () =>
       fetchClient<BaseResponse<CustomerResponseType[]>>(key, {
         method: "GET",
         requireAuth: true,

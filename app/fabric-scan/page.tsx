@@ -59,20 +59,21 @@ export default function FabricScan() {
   });
 
   const selectedCustomerIdRef = useRef<string | null>(null);
-
+  const selectedDateRef = useRef<Dayjs>(selectedDate);
   useEffect(() => {
     selectedCustomerIdRef.current = selectedCustomerId;
-  }, [selectedCustomerId]);
+    selectedDateRef.current = selectedDate;
+  }, [selectedCustomerId, selectedDate]);
 
   const handleScan = useCallback(
     async (data: string) => {
       const customerId = selectedCustomerIdRef.current;
-
+      const date = selectedDateRef.current;
       if (!customerId) {
         toast.error(t.toast.selected_cus);
         return;
       }
-      if (!selectedDate) {
+      if (!date) {
         toast.error(t.toast.selected_date);
         return;
       }
@@ -85,8 +86,8 @@ export default function FabricScan() {
 
       const isDuplicated = interestData?.data?.some(
         (item) =>
-          item.customer_id === selectedCustomerId &&
-          dayjs(item.date).isSame(selectedDate, "day") &&
+          item.customer_id === customerId &&
+          dayjs(item.date).isSame(date, "day") &&
           item.fabric.toUpperCase() === normalizedData
       );
 
@@ -98,7 +99,7 @@ export default function FabricScan() {
       const payload: InterestFabricRequestType = {
         cardNumber,
         customerId: customerId,
-        date: dayjs(selectedDate).format("YYYY-MM-DD"),
+        date: dayjs(date).format("YYYY-MM-DD"),
         fabric: normalizedData,
       };
 
@@ -111,7 +112,7 @@ export default function FabricScan() {
             : t.toast.failed,
       });
     },
-    [selectedCustomerId, selectedDate, cardNumber, interestData, t]
+    [cardNumber, interestData, t]
   );
 
   const handleDelete = async (id: string) => {
