@@ -67,7 +67,6 @@ export default function FabricScan() {
   const handleScan = useCallback(
     async (data: string) => {
       const customerId = selectedCustomerIdRef.current;
-      toast(`Selected customerId: ${customerId}`);
 
       if (!customerId) {
         toast.error(t.toast.selected_cus);
@@ -228,9 +227,7 @@ export default function FabricScan() {
           style={{ width: 200 }}
           value={selectedCustomerId}
           onChange={(value) => {
-            toast(`value:${value}`);
             setSelectedCustomerId(value);
-            toast(`setSelectedCustomerId: ${selectedCustomerId}`);
           }}
           options={customerData?.data?.map((c: CustomerResponseType) => ({
             value: c.id,
