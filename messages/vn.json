@@ -38,6 +38,7 @@
     "card_number": "Không tìm thấy số thẻ, vui lòng đăng nhập lại!",
     "loading": "Đang thực hiện...",
     "successed": "Thành công!",
-    "failed": "Thất bại!"
+    "failed": "Thất bại!",
+    "duplicate_fabric": "Mã vải đã được quét!"
   }
 }

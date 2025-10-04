@@ -38,6 +38,7 @@
     "card_number": "找不到卡號，請重新登入！",
     "loading": "執行中...",
     "successed": "成功！",
-    "failed": "失敗！"
+    "failed": "失敗！",
+    "duplicate_fabric": "布碼已經掃描過了"
   }
 }

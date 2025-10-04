@@ -31,8 +31,9 @@ const Scanner = nextDynamic(
 
 export default function FabricScan() {
   const { cardNumber } = useAuthStore();
-  const [selectedCustomer, setSelectedCustomer] =
-    useState<CustomerResponseType | null>(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
+    null
+  );
   const { t } = useTranslationCustom();
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
 
@@ -43,23 +44,37 @@ export default function FabricScan() {
   const tracker: TrackFunction = centerText;
   //
   const handleScan = async (data: string) => {
-    if (!selectedCustomer || selectedCustomer === null) {
+    if (!selectedCustomerId) {
       toast.error(t.toast.selected_cus);
       return;
     }
-    if (!selectedDate || selectedDate === null) {
+    if (!selectedDate) {
       toast.error(t.toast.selected_date);
       return;
     }
-    if (!cardNumber || cardNumber === null) {
+    if (!cardNumber) {
       toast.error(t.toast.card_number);
       return;
     }
 
     const normalizedData = data.trim().toUpperCase();
+
+    // check trùng
+    const isDuplicated = interestData?.data?.some(
+      (item) =>
+        item.customer_id === selectedCustomerId &&
+        dayjs(item.date).isSame(selectedDate, "day") &&
+        item.fabric.toUpperCase() === normalizedData
+    );
+
+    if (isDuplicated) {
+      toast.error(t.toast.duplicate_fabric);
+      return;
+    }
+
     const payload: InterestFabricRequestType = {
       cardNumber,
-      customerId: selectedCustomer.id.toString(),
+      customerId: selectedCustomerId,
       date: dayjs(selectedDate).format("YYYY-MM-DD"),
       fabric: normalizedData,
     };
@@ -90,7 +105,10 @@ export default function FabricScan() {
   const handleDelete = async (id: string) => {
     await toast.promise(APIS.customer.deleteInterest({ id }), {
       loading: t.toast.loading,
-      success: () => t.toast.successed,
+      success: (res) => {
+        if (res) mutateInterest();
+        return t.toast.successed;
+      },
       error: (err) =>
         err instanceof Error ? `${t.toast.err} ${err.message}` : t.toast.failed,
     });
@@ -112,13 +130,10 @@ export default function FabricScan() {
               loading={isLoadingCustomer}
               style={{ width: 200 }}
               onChange={(value) => {
-                const customer = customerData?.data?.find(
-                  (c: CustomerResponseType) => c.id === value
-                );
-                if (customer) setSelectedCustomer(customer);
+                setSelectedCustomerId(String(value));
               }}
               options={customerData?.data?.map((c: CustomerResponseType) => ({
-                value: c.id,
+                value: String(c.id),
                 label: c.customer_name,
               }))}
             />
@@ -214,7 +229,15 @@ export default function FabricScan() {
 
   return (
     <div>
-      <Tabs defaultActiveKey="1" items={items} />
+      <Tabs
+        defaultActiveKey="1"
+        items={items}
+        onChange={(key) => {
+          if (key === "2") {
+            mutateInterest();
+          }
+        }}
+      />
 
       <Modal
         title={t.fabric_scan.create_cus}

@@ -38,6 +38,7 @@
     "card_number": "Card number not found, please log in again!",
     "loading": "Processing...",
     "successed": "Success!",
-    "failed": "Failed!"
+    "failed": "Failed!",
+    "duplicate_fabric": "Fabric code has already been scanned!"
   }
 }
