@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import nextDynamic from "next/dynamic";
 import dayjs, { Dayjs } from "dayjs";
 import FabricScannedItem from "@/components/common/FabricScannedItem";
@@ -57,13 +57,19 @@ export default function FabricScan() {
     fromDate: selectedDate.format("YYYY-MM-DD"),
     toDate: selectedDate.format("YYYY-MM-DD"),
   });
+
+  const selectedCustomerIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    selectedCustomerIdRef.current = selectedCustomerId;
+  }, [selectedCustomerId]);
+
   const handleScan = useCallback(
     async (data: string) => {
-      toast(`Selected customerId: ${selectedCustomerId}`);
-      toast(`Selected date: ${selectedDate}`);
-      toast(`Card number: ${cardNumber}`);
+      const customerId = selectedCustomerIdRef.current;
+      toast(`Selected customerId: ${customerId}`);
 
-      if (!selectedCustomerId) {
+      if (!customerId) {
         toast.error(t.toast.selected_cus);
         return;
       }
@@ -92,7 +98,7 @@ export default function FabricScan() {
 
       const payload: InterestFabricRequestType = {
         cardNumber,
-        customerId: selectedCustomerId,
+        customerId: customerId,
         date: dayjs(selectedDate).format("YYYY-MM-DD"),
         fabric: normalizedData,
       };
