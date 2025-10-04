@@ -214,6 +214,15 @@ export default function FabricScan() {
   return (
     <div>
       <div className="flex flex-wrap items-center gap-4 mb-4">
+        <Button
+          type="primary"
+          onClick={() => {
+            handleScan("TESTFABRIC123"); // dữ liệu mã vải giả lập
+          }}
+        >
+          Test Scan
+        </Button>
+
         <Select
           placeholder={t.fabric_scan.choose_cus}
           loading={isLoadingCustomer}
