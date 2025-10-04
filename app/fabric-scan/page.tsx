@@ -132,6 +132,7 @@ export default function FabricScan() {
               placeholder={t.fabric_scan.choose_cus}
               loading={isLoadingCustomer}
               style={{ width: 200 }}
+              value={selectedCustomerId}
               onChange={(value) => {
                 setSelectedCustomerId(String(value));
               }}
