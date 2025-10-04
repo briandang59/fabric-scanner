@@ -5,7 +5,7 @@ import { useApi } from "../useApi";
 import { InterestResponseType } from "@/types/responses/interest";
 import { InterestGetRequestType } from "@/types/requests/interest";
 
-export function useInterest(data?: InterestGetRequestType) {
+export function useInterest(data: InterestGetRequestType) {
   const key = `/${urls.INTEREST}`;
 
   return useApi<BaseResponse<InterestResponseType[]>>(key, {

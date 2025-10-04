@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import nextDynamic from "next/dynamic";
 import dayjs, { Dayjs } from "dayjs";
 import FabricScannedItem from "@/components/common/FabricScannedItem";
@@ -47,54 +47,6 @@ export default function FabricScan() {
   const devices = useDevices();
   const deviceId = devices[0]?.deviceId;
   const tracker: TrackFunction = centerText;
-  //
-  const handleScan = async (data: string) => {
-    toast(`Selected customerId: ${selectedCustomerId}`);
-    toast(`Selected date: ${selectedDate}`);
-    toast(`Card number: ${cardNumber}`);
-
-    if (!selectedCustomerId) {
-      toast.error(t.toast.selected_cus);
-      return;
-    }
-    if (!selectedDate) {
-      toast.error(t.toast.selected_date);
-      return;
-    }
-    if (!cardNumber) {
-      toast.error(t.toast.card_number);
-      return;
-    }
-
-    const normalizedData = data.trim().toUpperCase();
-
-    const isDuplicated = interestData?.data?.some(
-      (item) =>
-        item.customer_id === selectedCustomerId &&
-        dayjs(item.date).isSame(selectedDate, "day") &&
-        item.fabric.toUpperCase() === normalizedData
-    );
-
-    if (isDuplicated) {
-      toast.error(t.toast.duplicate_fabric);
-      return;
-    }
-
-    const payload: InterestFabricRequestType = {
-      cardNumber,
-      customerId: selectedCustomerId,
-      date: dayjs(selectedDate).format("YYYY-MM-DD"),
-      fabric: normalizedData,
-    };
-
-    await toast.promise(APIS.customer.interest(payload), {
-      loading: t.toast.loading,
-      success: () => t.toast.successed,
-      error: (err) =>
-        err instanceof Error ? `${t.toast.err} ${err.message}` : t.toast.failed,
-    });
-  };
-
   const {
     data: interestData,
     isLoading: isLoadingInterest,
@@ -105,6 +57,58 @@ export default function FabricScan() {
     fromDate: selectedDate.format("YYYY-MM-DD"),
     toDate: selectedDate.format("YYYY-MM-DD"),
   });
+  const handleScan = useCallback(
+    async (data: string) => {
+      toast(`Selected customerId: ${selectedCustomerId}`);
+      toast(`Selected date: ${selectedDate}`);
+      toast(`Card number: ${cardNumber}`);
+
+      if (!selectedCustomerId) {
+        toast.error(t.toast.selected_cus);
+        return;
+      }
+      if (!selectedDate) {
+        toast.error(t.toast.selected_date);
+        return;
+      }
+      if (!cardNumber) {
+        toast.error(t.toast.card_number);
+        return;
+      }
+
+      const normalizedData = data.trim().toUpperCase();
+
+      const isDuplicated = interestData?.data?.some(
+        (item) =>
+          item.customer_id === selectedCustomerId &&
+          dayjs(item.date).isSame(selectedDate, "day") &&
+          item.fabric.toUpperCase() === normalizedData
+      );
+
+      if (isDuplicated) {
+        toast.error(t.toast.duplicate_fabric);
+        return;
+      }
+
+      const payload: InterestFabricRequestType = {
+        cardNumber,
+        customerId: selectedCustomerId,
+        date: dayjs(selectedDate).format("YYYY-MM-DD"),
+        fabric: normalizedData,
+      };
+
+      await toast.promise(APIS.customer.interest(payload), {
+        loading: t.toast.loading,
+        success: () => t.toast.successed,
+        error: (err) =>
+          err instanceof Error
+            ? `${t.toast.err} ${err.message}`
+            : t.toast.failed,
+      });
+    },
+    [selectedCustomerId, selectedDate, cardNumber, interestData, t]
+  );
+
   const handleDelete = async (id: string) => {
     await toast.promise(APIS.customer.deleteInterest({ id }), {
       loading: t.toast.loading,
