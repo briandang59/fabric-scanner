@@ -43,15 +43,15 @@ export default function FabricScan() {
   const tracker: TrackFunction = centerText;
 
   const handleScan = async (data: string) => {
-    if (!selectedCustomer) {
+    if (!selectedCustomer || selectedCustomer === null) {
       toast.error(t.toast.selected_cus);
       return;
     }
-    if (!selectedDate) {
+    if (!selectedDate || selectedDate === null) {
       toast.error(t.toast.selected_date);
       return;
     }
-    if (!cardNumber) {
+    if (!cardNumber || cardNumber === null) {
       toast.error(t.toast.card_number);
       return;
     }
