@@ -31,8 +31,13 @@ const Scanner = nextDynamic(
 
 export default function FabricScan() {
   const { cardNumber } = useAuthStore();
+  const {
+    data: customerData,
+    isLoading: isLoadingCustomer,
+    mutate: mutateCustomer,
+  } = useCustomer();
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
-    null
+    customerData?.data?.[0]?.id ? customerData.data[0].id : null
   );
   const { t } = useTranslationCustom();
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
@@ -91,11 +96,6 @@ export default function FabricScan() {
   };
 
   const {
-    data: customerData,
-    isLoading: isLoadingCustomer,
-    mutate: mutateCustomer,
-  } = useCustomer();
-  const {
     data: interestData,
     isLoading: isLoadingInterest,
     mutate: mutateInterest,
@@ -127,38 +127,6 @@ export default function FabricScan() {
       ),
       children: (
         <div>
-          <div className="flex flex-wrap items-center gap-4 mb-4">
-            <Select
-              placeholder={t.fabric_scan.choose_cus}
-              loading={isLoadingCustomer}
-              style={{ width: 200 }}
-              value={selectedCustomerId}
-              onChange={(value) => {
-                setSelectedCustomerId(String(value));
-              }}
-              options={customerData?.data?.map((c: CustomerResponseType) => ({
-                value: String(c.id),
-                label: c.customer_name,
-              }))}
-            />
-
-            <Button
-              type="dashed"
-              icon={<Plus size={16} />}
-              onClick={() => setIsModalOpen(true)}
-            ></Button>
-
-            <DatePicker
-              value={selectedDate}
-              onChange={(date) => date && setSelectedDate(date)}
-              disabledDate={(current) =>
-                current && current > dayjs().endOf("day")
-              }
-              format="YYYY-MM-DD"
-              style={{ width: 200 }}
-            />
-          </div>
-
           <div className="flex items-center justify-center">
             <Scanner
               formats={[
@@ -233,6 +201,36 @@ export default function FabricScan() {
 
   return (
     <div>
+      <div className="flex flex-wrap items-center gap-4 mb-4">
+        <Select
+          placeholder={t.fabric_scan.choose_cus}
+          loading={isLoadingCustomer}
+          style={{ width: 200 }}
+          value={selectedCustomerId}
+          onChange={(value) => {
+            toast(`value:${value}`);
+            setSelectedCustomerId(value);
+          }}
+          options={customerData?.data?.map((c: CustomerResponseType) => ({
+            value: String(c.id),
+            label: c.customer_name,
+          }))}
+        />
+
+        <Button
+          type="dashed"
+          icon={<Plus size={16} />}
+          onClick={() => setIsModalOpen(true)}
+        ></Button>
+
+        <DatePicker
+          value={selectedDate}
+          onChange={(date) => date && setSelectedDate(date)}
+          disabledDate={(current) => current && current > dayjs().endOf("day")}
+          format="YYYY-MM-DD"
+          style={{ width: 200 }}
+        />
+      </div>
       <Tabs
         defaultActiveKey="1"
         items={items}
