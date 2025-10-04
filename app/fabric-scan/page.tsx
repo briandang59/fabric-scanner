@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import nextDynamic from "next/dynamic";
 import dayjs, { Dayjs } from "dayjs";
 import FabricScannedItem from "@/components/common/FabricScannedItem";
@@ -120,6 +120,14 @@ export default function FabricScan() {
         err instanceof Error ? `${t.toast.err} ${err.message}` : t.toast.failed,
     });
   };
+
+  useEffect(() => {
+    if (selectedCustomerId) {
+      console.log("selectedCustomerId updated:", selectedCustomerId);
+      toast(`selectedCustomerId updated: ${selectedCustomerId}`);
+    }
+  }, [selectedCustomerId]);
+
   const items: TabsProps["items"] = [
     {
       key: "1",
