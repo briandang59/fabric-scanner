@@ -44,6 +44,10 @@ export default function FabricScan() {
   const tracker: TrackFunction = centerText;
   //
   const handleScan = async (data: string) => {
+    toast(`Selected customerId: ${selectedCustomerId}`);
+    toast(`Selected date: ${selectedDate}`);
+    toast(`Card number: ${cardNumber}`);
+
     if (!selectedCustomerId) {
       toast.error(t.toast.selected_cus);
       return;
@@ -59,7 +63,6 @@ export default function FabricScan() {
 
     const normalizedData = data.trim().toUpperCase();
 
-    // check trùng
     const isDuplicated = interestData?.data?.some(
       (item) =>
         item.customer_id === selectedCustomerId &&
