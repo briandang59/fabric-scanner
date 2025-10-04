@@ -127,13 +127,6 @@ export default function FabricScan() {
     });
   };
 
-  useEffect(() => {
-    if (selectedCustomerId) {
-      console.log("selectedCustomerId updated:", selectedCustomerId);
-      toast(`selectedCustomerId updated: ${selectedCustomerId}`);
-    }
-  }, [selectedCustomerId]);
-
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -223,7 +216,7 @@ export default function FabricScan() {
         <Button
           type="primary"
           onClick={() => {
-            handleScan("TESTFABRIC123"); // dữ liệu mã vải giả lập
+            handleScan("TESTFABRIC123");
           }}
         >
           Test Scan

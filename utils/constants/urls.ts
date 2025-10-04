@@ -3,4 +3,5 @@ export const urls = {
   LOGIN: "login",
   CUSTOMER: "customer",
   INTEREST: "interest",
+  GET_ALL: "get_all",
 };
