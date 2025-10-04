@@ -214,9 +214,10 @@ export default function FabricScan() {
           onChange={(value) => {
             toast(`value:${value}`);
             setSelectedCustomerId(value);
+            toast(`setSelectedCustomerId: ${selectedCustomerId}`);
           }}
           options={customerData?.data?.map((c: CustomerResponseType) => ({
-            value: String(c.id),
+            value: c.id,
             label: c.customer_name,
           }))}
         />
