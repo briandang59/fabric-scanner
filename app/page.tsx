@@ -18,6 +18,7 @@ import {
   type TrackFunction,
 } from "@yudiel/react-qr-scanner";
 import { InterestResponseType } from "@/types/responses/interest";
+import { useTranslationCustom } from "@/utils/hooks/useTranslationCustom";
 
 const Scanner = nextDynamic(
   () => import("@yudiel/react-qr-scanner").then((mod) => mod.Scanner),
@@ -25,6 +26,7 @@ const Scanner = nextDynamic(
 );
 
 export default function Home() {
+  const { t } = useTranslationCustom();
   const [deviceId, setDeviceId] = useState<string>();
   const [tracker, setTracker] = useState<string>("centerText");
   const [pause] = useState(false);
@@ -75,7 +77,7 @@ export default function Home() {
 
   const handleDelete = (id: string) => {
     setScannedData((prev) => prev.filter((item) => item.id !== id));
-    toast.success("Đã xoá thành công!");
+    toast.success("Delete successfully!");
   };
   const items: TabsProps["items"] = [
     {
@@ -83,7 +85,7 @@ export default function Home() {
       label: (
         <span className="flex items-center gap-2">
           <ScanLine size={16} />
-          <span>Scan</span>
+          <span>{t.fabric_scan.scan}</span>
         </span>
       ),
       children: (
@@ -154,7 +156,7 @@ export default function Home() {
       label: (
         <span className="flex items-center gap-2">
           <ClipboardList size={16} />
-          <span>Results</span>
+          <span>{t.fabric_scan.result}</span>
         </span>
       ),
       children: (
