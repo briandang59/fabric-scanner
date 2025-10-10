@@ -27,10 +27,15 @@ export async function loginAction(
   if (!account || !password) {
     return { error: "Vui lòng nhập đầy đủ thông tin." };
   }
+  const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY || "";
 
+  const encryptedPassword = CryptoJS.AES.encrypt(
+    password,
+    secretKey
+  ).toString();
   const payload: LoginRequestType = {
     cardNumber: account.toUpperCase(),
-    password: CryptoJS.SHA256(password).toString(),
+    password: encryptedPassword,
   };
   console.log("payload", payload);
 
