@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { loginAction } from "@/app/actions/auth";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { paths } from "@/utils/constants/paths";
-
+import CryptoJS from "crypto-js";
 function LoginForm() {
   const router = useRouter();
   const { t } = useTranslationCustom();
@@ -28,20 +28,38 @@ function LoginForm() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    const formData = new FormData();
-    formData.append("account", data.account);
-    formData.append("password", data.password);
+    try {
+      const secretKey = process.env.NEXT_PUBLIC_AUTH_KEY!;
+      const key = CryptoJS.enc.Base64.parse(secretKey);
+      const iv = CryptoJS.lib.WordArray.random(16);
 
-    const result = await loginAction({}, formData);
+      const encrypted = CryptoJS.AES.encrypt(data.password, key, {
+        iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7,
+      });
 
-    if ("error" in result) {
-      toast.error(result.error);
-      return;
+      const encryptedPassword = iv
+        .concat(encrypted.ciphertext)
+        .toString(CryptoJS.enc.Base64);
+
+      const formData = new FormData();
+      formData.append("account", data.account);
+      formData.append("password", encryptedPassword);
+
+      const result = await loginAction({}, formData);
+
+      if ("error" in result) {
+        toast.error(result.error);
+        return;
+      }
+
+      useAuthStore.getState().login(result.token, result.cardNumber);
+      toast.success(t.toast.loggin_succesed);
+      router.push(paths.HOME);
+    } catch (error) {
+      console.error("Encryption error:", error);
     }
-
-    useAuthStore.getState().login(result.token, result.cardNumber);
-    toast.success(t.toast.loggin_succesed);
-    router.push(paths.HOME);
   };
 
   return (

@@ -6,7 +6,6 @@ import { BaseResponse } from "@/types/responses/base";
 import { LoginResponseType } from "@/types/responses/auth";
 import { LoginRequestType } from "@/types/requests/auth";
 import { urls } from "@/utils/constants/urls";
-import CryptoJS from "crypto-js";
 
 type LoginActionReturn =
   | { error: string }
@@ -27,15 +26,10 @@ export async function loginAction(
   if (!account || !password) {
     return { error: "Vui lòng nhập đầy đủ thông tin." };
   }
-  const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY || "";
 
-  const encryptedPassword = CryptoJS.AES.encrypt(
-    password,
-    secretKey
-  ).toString();
   const payload: LoginRequestType = {
     cardNumber: account.toUpperCase(),
-    password: encryptedPassword,
+    password,
   };
   console.log("payload", payload);
 
