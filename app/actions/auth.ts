@@ -6,6 +6,7 @@ import { BaseResponse } from "@/types/responses/base";
 import { LoginResponseType } from "@/types/responses/auth";
 import { LoginRequestType } from "@/types/requests/auth";
 import { urls } from "@/utils/constants/urls";
+import CryptoJS from "crypto-js";
 
 type LoginActionReturn =
   | { error: string }
@@ -29,7 +30,7 @@ export async function loginAction(
 
   const payload: LoginRequestType = {
     cardNumber: account.toUpperCase(),
-    password,
+    password: CryptoJS.SHA256(password).toString(),
   };
   console.log("payload", payload);
 
