@@ -7,6 +7,7 @@ import { CustomerResponseType } from "@/types/responses/customer";
 import { InterestFabricRequestType } from "@/types/requests/interest";
 import { CustomerRequestType } from "@/types/requests/customer";
 import { InterestResponseType } from "@/types/responses/interest";
+import { StatisticalTop10Fabric } from "@/types/responses/statistical";
 
 export const APIS = {
   auth: {
@@ -52,5 +53,16 @@ export const APIS = {
         body: JSON.stringify(data),
         requireAuth: true,
       }),
+  },
+
+  statistical: {
+    GetTop10Fabric: () =>
+      fetchClient<BaseResponse<StatisticalTop10Fabric[]>>(
+        `/${urls.INTEREST}/${urls.TOP}`,
+        {
+          method: "GET",
+          requireAuth: true,
+        }
+      ),
   },
 };

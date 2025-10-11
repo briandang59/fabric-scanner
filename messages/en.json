@@ -39,6 +39,22 @@
     "loading": "Processing...",
     "successed": "Success!",
     "failed": "Failed!",
-    "duplicate_fabric": "Fabric code has already been scanned!"
+    "duplicate_fabric": "Fabric code has already been scanned!",
+    "warning_choose_fanric": "You can only select a maximum of 10 fabrics to compare."
+  },
+  "statistical": {
+    "title": "Statistical Dashboard",
+    "limit_fabric_selected": "Select fabric (maximum 10)",
+    "unit_time": "Time unit",
+    "change_by_time": "Quantity fluctuation over time",
+    "time": "Time",
+    "year": "Year",
+    "month": "Month",
+    "quarter": "Quarter",
+    "quantity": "Quantity",
+    "top_sell_fabric": "Top selling fabrics",
+    "top_sell_fabric_by_customer": "Top fabrics by customer",
+    "compare_quantity_fabric": "Compare selected fabric quantity",
+    "no_data": "No data"
   }
 }

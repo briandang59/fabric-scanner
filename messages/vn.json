@@ -39,6 +39,22 @@
     "loading": "Đang thực hiện...",
     "successed": "Thành công!",
     "failed": "Thất bại!",
-    "duplicate_fabric": "Mã vải đã được quét!"
+    "duplicate_fabric": "Mã vải đã được quét!",
+    "warning_choose_fanric": "Bạn chỉ có thể chọn tối đa 10 loại vải để so sánh."
+  },
+  "statistical": {
+    "title": "Bảng điều khiển thống kê",
+    "limit_fabric_selected": "Chọn loại vải (tối đa 10)",
+    "unit_time": "Đơn vị thời gian",
+    "change_by_time": "Biến động số lượng theo thời gian",
+    "time": "Thời gian",
+    "year": "Năm",
+    "month": "Tháng",
+    "quarter": "Quý",
+    "quantity": "Số lượng",
+    "top_sell_fabric": "Top vải bán chạy nhất",
+    "top_sell_fabric_by_customer": "Top vải theo từng khách hàng",
+    "compare_quantity_fabric": "So sánh lượng vải được chọn",
+    "no_data": "Không có dữ liệu"
   }
 }

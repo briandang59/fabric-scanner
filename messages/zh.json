@@ -39,6 +39,23 @@
     "loading": "執行中...",
     "successed": "成功！",
     "failed": "失敗！",
-    "duplicate_fabric": "布碼已經掃描過了"
+    "duplicate_fabric": "布碼已經掃描過了",
+
+    "warning_choose_fanric": "您最多只能選擇10種布料進行比較。"
+  },
+  "statistical": {
+    "title": "統計儀表板",
+    "limit_fabric_selected": "選擇布料（最多10種）",
+    "unit_time": "時間單位",
+    "change_by_time": "數量隨時間的變動",
+    "time": "時間",
+    "year": "年",
+    "month": "月",
+    "quarter": "季",
+    "quantity": "數量",
+    "top_sell_fabric": "最暢銷布料排行",
+    "top_sell_fabric_by_customer": "各客戶的最暢銷布料",
+    "compare_quantity_fabric": "比較所選布料數量",
+    "no_data": "沒有資料"
   }
 }
